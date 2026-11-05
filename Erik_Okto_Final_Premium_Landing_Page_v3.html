@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erik Okto | Health & Financial Protection Consultant</title>
+    
+    <!-- Google Fonts: Plus Jakarta Sans & Playfair Display -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        emerald: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            800: '#065f46',
+                            900: '#064e3b',
+                        },
+                        charcoal: '#1a1d20',
+                        slateDark: '#2d3748',
+                        offWhite: '#fcfdfd',
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+
+        // Video edukasi: menerima tautan YouTube dan menampilkan embed setelah dikonfirmasi pengguna.
+        function loadEducationVideo(number) {
+            const input = document.getElementById(`video-url-${number}`);
+            const frame = document.getElementById(`video-frame-${number}`);
+            if (!input || !frame) return;
+            let url; try { url = new URL(input.value.trim()); } catch (_) { alert('Masukkan tautan YouTube yang valid terlebih dahulu.'); return; }
+            let id = '';
+            if (url.hostname.includes('youtu.be')) id = url.pathname.slice(1).split('/')[0];
+            else if (url.hostname.includes('youtube.com')) id = url.searchParams.get('v') || (url.pathname.includes('/embed/') ? url.pathname.split('/embed/')[1].split('/')[0] : '');
+            if (!/^[A-Za-z0-9_-]{11}$/.test(id)) { alert('Tautan belum dikenali. Gunakan URL youtube.com/watch?v=... atau youtu.be/...'); return; }
+            frame.innerHTML = `<iframe class="w-full h-full" src="https://www.youtube-nocookie.com/embed/${id}" title="Video edukasi ${number}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+            frame.classList.remove('hidden');
+        }
+
+        // Pratinjau lokal file bukti. Tidak mengunggah file ke server.
+        function previewTestimonialFile(input, targetId) {
+            const target = document.getElementById(targetId);
+            if (!target) return; target.innerHTML = '';
+            const file = input.files && input.files[0]; if (!file) return;
+            const allowed = ['image/jpeg', 'image/png', 'application/pdf'];
+            if (!allowed.includes(file.type)) { alert('Format file harus JPG, PNG, atau PDF.'); input.value = ''; return; }
+            if (file.size > 10 * 1024 * 1024) { alert('Ukuran file maksimal 10 MB.'); input.value = ''; return; }
+            const name = document.createElement('p'); name.className = 'font-semibold break-all'; name.textContent = `File dipilih: ${file.name} (${(file.size/1024/1024).toFixed(2)} MB)`; target.appendChild(name);
+            const url = URL.createObjectURL(file);
+            if (file.type.startsWith('image/')) { const img = document.createElement('img'); img.src = url; img.alt = 'Pratinjau bukti testimoni'; target.appendChild(img); }
+            else { const link = document.createElement('a'); link.href = url; link.target = '_blank'; link.rel = 'noopener'; link.className = 'inline-flex mt-2 text-emerald-800 underline font-semibold'; link.textContent = 'Buka pratinjau PDF'; target.appendChild(link); }
+        }
+
+    </script>
+
+    <style>
+        /* CSS ANIMATIONS: GLIDE & MORPH */
+        @keyframes morphBlob {
+            0% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; transform: translate(0px, 0px) rotate(0deg) scale(1); }
+            34% { border-radius: 70% 30% 50% 50% / 30% 30% 70% 70%; transform: translate(20px, -25px) rotate(120deg) scale(1.05); }
+            67% { border-radius: 100% 60% 60% 100% / 100% 100% 60% 60%; transform: translate(-15px, 20px) rotate(240deg) scale(0.95); }
+            100% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; transform: translate(0px, 0px) rotate(360deg) scale(1); }
+        }
+
+        @keyframes glideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-morph {
+            animation: morphBlob 12s infinite ease-in-out;
+        }
+
+        .animate-glide-up {
+            animation: glideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .custom-shadow {
+            box-shadow: 0 10px 30px -5px rgba(6, 78, 59, 0.05), 0 4px 12px -2px rgba(0, 0, 0, 0.03);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .card-hover {
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: 0 20px 40px -10px rgba(4, 120, 87, 0.15);
+        }
+
+        /* Custom radio card selection with morphing effect */
+        input[type="radio"]:checked + .region-card {
+            border-color: #047857;
+            background-color: #f0fdf4;
+            box-shadow: 0 10px 25px -4px rgba(4, 120, 87, 0.18);
+            transform: scale(1.02);
+        }
+        input[type="radio"]:checked + .region-card .badge-icon {
+            background-color: #047857;
+            color: #ffffff;
+            transform: rotate(360deg);
+            transition: transform 0.5s ease;
+        }
+
+        .tab-btn {
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .tab-btn.active {
+            border-bottom-color: #047857;
+            color: #047857;
+            font-weight: 700;
+        }
+
+        .tab-content {
+            transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+        }
+
+        /* PREMIUM EXPERIENCE */
+        :root { scroll-behavior: smooth; }
+        body { overflow-x: hidden; }
+        .scroll-progress {
+            position: fixed; inset: 0 auto auto 0; height: 3px; width: 0%;
+            z-index: 120; background: linear-gradient(90deg, #047857, #d6ad60);
+            box-shadow: 0 0 14px rgba(4,120,87,.35);
+        }
+        .reveal {
+            opacity: 0; transform: translateY(34px) scale(.985);
+            transition: opacity .85s cubic-bezier(.2,.7,.2,1),
+                        transform .85s cubic-bezier(.2,.7,.2,1);
+            will-change: opacity, transform;
+        }
+        .reveal.is-visible { opacity: 1; transform: translateY(0) scale(1); }
+        .reveal-zoom { opacity: 0; transform: scale(.92); transition: opacity 1s ease, transform 1.1s cubic-bezier(.16,1,.3,1); }
+        .reveal-zoom.is-visible { opacity: 1; transform: scale(1); }
+        .hero-photo { transform: translateZ(0); transition: transform 1.2s cubic-bezier(.2,.7,.2,1), box-shadow 1.2s ease; }
+        .hero-photo:hover { transform: translateY(-6px) scale(1.025); box-shadow: 0 35px 80px -28px rgba(4,78,59,.35); }
+        .luxury-line { width: 54px; height: 2px; background: linear-gradient(90deg,#047857,#d6ad60); }
+        #navbar.scrolled { box-shadow: 0 12px 35px rgba(15,23,42,.08); background: rgba(255,255,255,.96); }
+        .welcome-quote { font-family: 'Playfair Display', serif; font-size: clamp(1rem, 2.8vw, 1.18rem); line-height: 1.75; }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+            .reveal, .reveal-zoom { opacity: 1; transform: none; }
+        }
+
+        .risk-card, .testimonial-card { transition: transform .45s cubic-bezier(.2,.8,.2,1), box-shadow .45s ease, border-color .3s ease; }
+        .risk-card:hover, .testimonial-card:hover { transform: translateY(-6px); box-shadow: 0 18px 42px rgba(15, 60, 45, .10); border-color: #a7d7c5; }
+        /* KALKULATOR: input gelap dengan teks putih agar angka dan isian terbaca jelas */
+        #kalkulator-section input:not([type="radio"]):not([type="file"]),
+        #kalkulator-section textarea,
+        #kalkulator-section select {
+            color: #ffffff !important;
+            background-color: #1a1d20 !important;
+            border-color: #374151 !important;
+            caret-color: #ffffff;
+        }
+        #kalkulator-section input:not([type="radio"]):not([type="file"])::placeholder,
+        #kalkulator-section textarea::placeholder {
+            color: #cbd5e1 !important;
+            opacity: 1;
+        }
+        #kalkulator-section input:not([type="radio"]):not([type="file"]):focus,
+        #kalkulator-section textarea:focus,
+        #kalkulator-section select:focus {
+            border-color: #10b981 !important;
+            box-shadow: 0 0 0 3px rgba(16,185,129,.18);
+            outline: none;
+        }
+        .file-preview img { max-height: 180px; max-width: 100%; object-fit: contain; border-radius: 10px; margin-top: 8px; }
+        .file-preview iframe { width: 100%; height: 260px; border: 1px solid #e5e7eb; border-radius: 10px; margin-top: 8px; }
+        @media (prefers-reduced-motion: reduce) { .risk-card, .testimonial-card { transition: none; } }
+    </style>
+</head>
+<body class="bg-offWhite text-charcoal font-sans antialiased selection:bg-emerald-100 selection:text-emerald-800">
+    <div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
+
+    <!-- WELCOME SPLASH SCREEN / OVERLAY 100% WITH GLIDE EFFECT -->
+    <div id="welcome-overlay" class="fixed inset-0 z-[100] bg-charcoal/95 backdrop-blur-md flex items-center justify-center p-4 transition-all duration-700">
+        <div class="max-w-md w-full glass-card rounded-3xl p-8 text-center space-y-6 shadow-2xl animate-glide-up">
+            <div class="w-20 h-20 mx-auto rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-serif text-3xl font-bold shadow-inner">
+                E
+            </div>
+            
+            <div class="space-y-2">
+                <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold uppercase tracking-wider">Selamat Datang</span>
+                <h2 class="text-2xl font-extrabold text-charcoal">Erik Okto</h2>
+                <p class="text-xs text-emerald-700 font-bold uppercase tracking-widest">Health Protection Specialist</p>
+            </div>
+
+            <p class="welcome-quote text-gray-700 leading-relaxed font-medium">
+                “Lindungi keluarga Anda dari risiko kesehatan yang tak terduga — karena cinta tak cukup tanpa perlindungan.”
+            </p>
+
+            <button onclick="enterLandingPage()" class="w-full py-4 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-sm shadow-lg shadow-emerald-800/30 transition-all duration-300 flex items-center justify-center gap-2 group hover:scale-[1.02]">
+                <span>100% MASUK KE LANDING PAGE</span>
+                <i class="fa-solid fa-arrow-right group-hover:translate-x-1.5 transition-transform"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- NAVIGASI / HEADER -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-emerald-800 text-white flex items-center justify-center font-serif text-xl font-bold shadow-md">
+                        E
+                    </div>
+                    <div>
+                        <span class="text-lg font-bold tracking-tight text-charcoal block leading-tight">ERIK OKTO</span>
+                        <span class="text-xs font-semibold text-emerald-700 tracking-wider uppercase block">Health Protection Specialist</span>
+                    </div>
+                </div>
+
+                <nav class="hidden md:flex space-x-8 items-center text-sm font-medium text-slateDark">
+                    <a href="#risiko" class="hover:text-emerald-700 transition-colors">Risiko Kesehatan</a>
+                    <a href="#video-edukasi" class="hover:text-emerald-700 transition-colors">Video Edukasi</a>
+                    <a href="#kalkulator-section" class="hover:text-emerald-700 transition-colors">Kalkulator Perencanaan</a>
+                    <a href="#testimoni-claim" class="hover:text-emerald-700 transition-colors">Testimoni Klaim</a>
+                </nav>
+
+                <div class="hidden md:flex items-center">
+                    <a href="https://wa.me/6285722655656?text=Halo%20Pak%20Erik,%20saya%20ingin%20berkonsultasi%20mengenai%20Proteksi%20Kesehatan." 
+                       target="_blank" 
+                       class="inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-emerald-700 text-white text-sm font-semibold hover:bg-emerald-800 transition-all shadow-sm hover:shadow-md gap-2">
+                        <i class="fa-brands fa-whatsapp text-lg"></i>
+                        <span>Konsultasi Gratis</span>
+                    </a>
+                </div>
+
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-gray-600 hover:text-emerald-700 focus:outline-none p-2">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-gray-100 px-4 pt-2 pb-6 space-y-3">
+            <a href="#risiko" class="block py-2 text-base font-medium text-slateDark hover:text-emerald-700">Risiko Kesehatan</a>
+            <a href="#video-edukasi" class="block py-2 text-base font-medium text-slateDark hover:text-emerald-700">Video Edukasi</a>
+            <a href="#kalkulator-section" class="block py-2 text-base font-medium text-slateDark hover:text-emerald-700">Kalkulator Perencanaan</a>
+            <a href="#testimoni-claim" class="block py-2 text-base font-medium text-slateDark hover:text-emerald-700">Testimoni Klaim</a>
+            <a href="https://wa.me/6285722655656?text=Halo%20Pak%20Erik,%20saya%20ingin%20berkonsultasi%20mengenai%20Proteksi%20Kesehatan." 
+               target="_blank" 
+               class="w-full mt-2 inline-flex items-center justify-center px-5 py-3 rounded-xl bg-emerald-700 text-white text-base font-semibold gap-2">
+                <i class="fa-brands fa-whatsapp text-xl"></i>
+                <span>Konsultasi via WhatsApp</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- HERO SECTION WITH BACKGROUND MORPHING ORBS -->
+    <section class="relative pt-12 pb-20 md:pt-20 md:pb-32 overflow-hidden bg-gradient-to-b from-emerald-50/40 to-transparent">
+        
+        <!-- Morphing Floating Background Orbs -->
+        <div class="absolute top-10 left-10 w-72 h-72 bg-emerald-200/40 blur-3xl animate-morph pointer-events-none"></div>
+        <div class="absolute bottom-10 right-10 w-96 h-96 bg-emerald-300/30 blur-3xl animate-morph pointer-events-none" style="animation-delay: -6s;"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+                
+                <div class="lg:col-span-7 space-y-6 text-center lg:text-left animate-glide-up">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-100/80 border border-emerald-200 text-emerald-800 text-xs md:text-sm font-semibold tracking-wide">
+                        <i class="fa-solid fa-shield-halved text-emerald-700"></i>
+                        <span>Health Protection Specialist & Advisory</span>
+                    </div>
+
+                    <div class="luxury-line mx-auto lg:mx-0"></div>
+                    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-charcoal tracking-tight leading-tight">
+                        Merencanakan Akses Pengobatan Terbaik <span class="font-serif italic font-normal text-emerald-800 block md:inline">Tanpa Mengganggu Aset</span> & Impian Keluarga Anda.
+                    </h1>
+
+                    <p class="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-normal">
+                        Perencanaan dan pendampingan perlindungan kesehatan kelas dunia yang dirancang secara presisi untuk kenyamanan perawatan medis individu prioritas dan keluarga Anda.
+                    </p>
+
+                    <div class="pt-4 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                        <a href="#kalkulator-section" 
+                           class="w-full sm:w-auto px-8 py-4 rounded-xl bg-emerald-800 text-white font-semibold shadow-lg shadow-emerald-800/20 hover:bg-emerald-900 transition-all hover:scale-[1.02] text-center">
+                            Hitung Proyeksi Proteksi
+                        </a>
+                        <a href="https://wa.me/6285722655656?text=Halo%20Pak%20Erik,%20saya%20ingin%20berkonsultasi%20langsung." 
+                           target="_blank"
+                           class="w-full sm:w-auto px-8 py-4 rounded-xl bg-white text-emerald-800 border border-emerald-200 font-semibold hover:bg-emerald-50 transition-all flex items-center justify-center gap-2.5 shadow-sm hover:scale-[1.02]">
+                            <i class="fa-brands fa-whatsapp text-emerald-600 text-xl"></i>
+                            <span>Hubungi via WhatsApp</span>
+                        </a>
+                    </div>
+
+                    <div class="pt-8 grid grid-cols-3 gap-4 border-t border-gray-200/80 max-w-lg mx-auto lg:mx-0">
+                        <div>
+                            <p class="text-xl sm:text-2xl font-bold text-emerald-800">Cashless</p>
+                            <p class="text-xs text-gray-500 font-medium">Kemudahan Layanan</p>
+                        </div>
+                        <div>
+                            <p class="text-xl sm:text-2xl font-bold text-emerald-800">Global</p>
+                            <p class="text-xs text-gray-500 font-medium">Cakupan RS</p>
+                        </div>
+                        <div>
+                            <p class="text-xl sm:text-2xl font-bold text-emerald-800">Personal</p>
+                            <p class="text-xs text-gray-500 font-medium">Pendampingan</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-5 flex justify-center animate-glide-up" style="animation-delay: 0.2s;">
+                    <div class="relative w-72 sm:w-80 lg:w-96">
+                        <div class="absolute -inset-2 bg-gradient-to-tr from-emerald-600 to-emerald-200 rounded-3xl animate-morph opacity-60"></div>
+                        
+                        <div class="relative glass-card p-4 rounded-3xl custom-shadow hero-photo reveal-zoom">
+                            <div class="relative aspect-[4/5] rounded-2xl overflow-hidden bg-slate-100 mb-4">
+                                <img src="data:image/jpeg;base64,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" 
+                                     alt="Erik Okto - Health Protection Specialist" 
+                                     class="w-full h-full object-cover object-top transition-transform duration-700 hover:scale-105">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                                
+                                <div class="absolute bottom-4 left-4 right-4 text-white">
+                                    <p class="font-bold text-lg leading-tight">Erik Okto</p>
+                                    <p class="text-xs text-emerald-200 font-medium">Senior Financial Consultant</p>
+                                </div>
+                            </div>
+
+                            <div class="bg-emerald-50/80 rounded-xl p-3 border border-emerald-100 flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-lg bg-emerald-800 text-amber-300 flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-shield-heart text-lg"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-emerald-900 uppercase tracking-wider">Perlindungan Berbasis Kebutuhan</p>
+                                    <p class="text-[11px] text-gray-600">Pendekatan personal untuk Anda dan keluarga</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+    <!-- RISIKO KESEHATAN -->
+    <section id="risiko" class="py-16 md:py-24 bg-white relative overflow-hidden">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mx-auto text-center mb-12 space-y-4">
+          <span class="inline-flex px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold uppercase tracking-wider">Kenali Risikonya</span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-charcoal">Risiko Kesehatan Dapat Mengubah Rencana Keuangan</h2>
+          <p class="text-gray-600 leading-relaxed">Kondisi kesehatan dapat datang tanpa diduga. Persiapan perlindungan membantu keluarga menghadapi biaya perawatan tanpa harus mengorbankan aset dan tujuan finansial yang telah dibangun.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <article class="risk-card rounded-2xl p-7 border border-emerald-100 bg-gradient-to-br from-white to-emerald-50/70 card-hover">
+            <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-xl mb-5"><i class="fa-solid fa-hospital"></i></div>
+            <h3 class="font-bold text-lg text-charcoal mb-2">Biaya Rawat Inap</h3><p class="text-sm text-gray-600 leading-relaxed">Biaya kamar, tindakan medis, obat, dokter, dan perawatan lanjutan dapat membebani arus kas keluarga ketika tidak dipersiapkan.</p>
+          </article>
+          <article class="risk-card rounded-2xl p-7 border border-emerald-100 bg-gradient-to-br from-white to-emerald-50/70 card-hover">
+            <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-xl mb-5"><i class="fa-solid fa-heart-pulse"></i></div>
+            <h3 class="font-bold text-lg text-charcoal mb-2">Penyakit Kritis</h3><p class="text-sm text-gray-600 leading-relaxed">Penyakit serius dapat memerlukan pengobatan panjang, perubahan gaya hidup, serta waktu pemulihan yang berdampak pada penghasilan.</p>
+          </article>
+          <article class="risk-card rounded-2xl p-7 border border-emerald-100 bg-gradient-to-br from-white to-emerald-50/70 card-hover">
+            <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-xl mb-5"><i class="fa-solid fa-chart-line"></i></div>
+            <h3 class="font-bold text-lg text-charcoal mb-2">Inflasi Medis</h3><p class="text-sm text-gray-600 leading-relaxed">Harga layanan kesehatan dapat meningkat dari waktu ke waktu. Evaluasi manfaat dan limit perlindungan perlu dilakukan secara berkala.</p>
+          </article>
+        </div>
+        <p class="text-xs text-gray-500 text-center mt-7">Informasi bersifat edukatif. Manfaat, pengecualian, limit, masa tunggu, dan ketentuan klaim mengikuti polis masing-masing.</p>
+      </div>
+    </section>
+
+    <!-- VIDEO EDUKASI (3 MATERI) -->
+    <section id="video-section" class="py-16 md:py-24 bg-white border-y border-gray-100 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+                <h2 class="text-xs font-bold text-emerald-700 tracking-widest uppercase">Belajar Sebelum Membutuhkan</h2>
+                <p class="text-2xl sm:text-3xl font-extrabold text-charcoal">Video Edukasi Perlindungan Kesehatan</p>
+                <p class="text-gray-600 text-sm sm:text-base leading-relaxed">
+                    Tiga topik edukasi untuk membantu Anda memahami risiko kesehatan, biaya medis, dan pentingnya menyiapkan perlindungan yang sesuai kebutuhan keluarga.
+                </p>
+            </div>
+
+            <div id="video-edukasi" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <div class="bg-offWhite rounded-2xl border border-gray-200/80 overflow-hidden card-hover flex flex-col">
+                    <div class="relative aspect-video bg-gray-900 group" >
+                        <img src="https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=600" 
+                             alt="Inflasi Biaya Rumah Sakit" 
+                             class="w-full h-full object-cover opacity-80 group-hover:opacity-70 transition-opacity">
+                        <div class="absolute inset-0 flex flex-col items-center justify-center gap-2">
+                            <div class="w-14 h-14 rounded-full bg-emerald-700/90 text-white flex items-center justify-center shadow-lg">
+                                <i class="fa-solid fa-book-open text-lg"></i>
+                            </div>
+                            <span class="text-white text-[10px] font-semibold tracking-wide uppercase">Segera Hadir</span>
+                        </div>
+                        <span class="absolute bottom-3 right-3 bg-black/70 text-white text-[11px] px-2 py-1 rounded">Materi edukasi</span>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col justify-between space-y-3">
+                        <div>
+                            <span class="text-[11px] font-bold text-emerald-700 uppercase tracking-wider block mb-1">Edukasi #1</span>
+                            <h3 class="font-bold text-base text-charcoal leading-snug">Realita Inflasi Biaya Medis & Rumah Sakit Tiap Tahun</h3>
+                        </div>
+                        <p class="text-xs text-gray-500 leading-relaxed">
+                            Membedah data kenaikan biaya perawatan medis tahunan dan dampaknya terhadap dana darurat Anda.
+                        </p>
+                        <div class="mt-4 space-y-2">
+                          <label class="block text-[11px] font-semibold text-gray-500" for="video-url-1">Tautan video YouTube (opsional)</label>
+                          <div class="flex gap-2"><input id="video-url-1" type="url" placeholder="https://youtu.be/..." class="min-w-0 flex-1 rounded-lg border border-gray-200 px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-600"><button type="button" onclick="loadEducationVideo(1)" class="shrink-0 rounded-lg bg-emerald-800 px-3 py-2 text-xs font-semibold text-white hover:bg-emerald-900">Tampilkan</button></div>
+                          <div id="video-frame-1" class="hidden aspect-video overflow-hidden rounded-xl bg-black"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-offWhite rounded-2xl border border-gray-200/80 overflow-hidden card-hover flex flex-col">
+                    <div class="relative aspect-video bg-gray-900 group" >
+                        <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=600" 
+                             alt="Penyakit Kritis dan Keuangan" 
+                             class="w-full h-full object-cover opacity-80 group-hover:opacity-70 transition-opacity">
+                        <div class="absolute inset-0 flex flex-col items-center justify-center gap-2">
+                            <div class="w-14 h-14 rounded-full bg-emerald-700/90 text-white flex items-center justify-center shadow-lg">
+                                <i class="fa-solid fa-book-open text-lg"></i>
+                            </div>
+                            <span class="text-white text-[10px] font-semibold tracking-wide uppercase">Segera Hadir</span>
+                        </div>
+                        <span class="absolute bottom-3 right-3 bg-black/70 text-white text-[11px] px-2 py-1 rounded">Materi edukasi</span>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col justify-between space-y-3">
+                        <div>
+                            <span class="text-[11px] font-bold text-emerald-700 uppercase tracking-wider block mb-1">Edukasi #2</span>
+                            <h3 class="font-bold text-base text-charcoal leading-snug">Risiko Penyakit Kritis & Dampaknya Terhadap Keuangan</h3>
+                        </div>
+                        <p class="text-xs text-gray-500 leading-relaxed">
+                            Mengapa proteksi kesehatan yang tepat menjaga portofolio investasi keluarga tetap utuh saat kondisi tak terduga.
+                        </p>
+                        <div class="mt-4 space-y-2">
+                          <label class="block text-[11px] font-semibold text-gray-500" for="video-url-2">Tautan video YouTube (opsional)</label>
+                          <div class="flex gap-2"><input id="video-url-2" type="url" placeholder="https://youtu.be/..." class="min-w-0 flex-1 rounded-lg border border-gray-200 px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-600"><button type="button" onclick="loadEducationVideo(2)" class="shrink-0 rounded-lg bg-emerald-800 px-3 py-2 text-xs font-semibold text-white hover:bg-emerald-900">Tampilkan</button></div>
+                          <div id="video-frame-2" class="hidden aspect-video overflow-hidden rounded-xl bg-black"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-offWhite rounded-2xl border border-gray-200/80 overflow-hidden card-hover flex flex-col">
+                    <div class="relative aspect-video bg-gray-900 group" >
+                        <img src="https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&q=80&w=600" 
+                             alt="Cakupan Pengobatan Internasional" 
+                             class="w-full h-full object-cover opacity-80 group-hover:opacity-70 transition-opacity">
+                        <div class="absolute inset-0 flex flex-col items-center justify-center gap-2">
+                            <div class="w-14 h-14 rounded-full bg-emerald-700/90 text-white flex items-center justify-center shadow-lg">
+                                <i class="fa-solid fa-book-open text-lg"></i>
+                            </div>
+                            <span class="text-white text-[10px] font-semibold tracking-wide uppercase">Segera Hadir</span>
+                        </div>
+                        <span class="absolute bottom-3 right-3 bg-black/70 text-white text-[11px] px-2 py-1 rounded">Materi edukasi</span>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col justify-between space-y-3">
+                        <div>
+                            <span class="text-[11px] font-bold text-emerald-700 uppercase tracking-wider block mb-1">Edukasi #3</span>
+                            <h3 class="font-bold text-base text-charcoal leading-snug">Pentingnya Akses Perawatan Terbaik Tanpa Batasan Wilayah</h3>
+                        </div>
+                        <p class="text-xs text-gray-500 leading-relaxed">
+                            Fasilitas *second opinion* dan kebebasan memilih dokter spesialis terbaik di Singapura, Malaysia, hingga Worldwide.
+                        </p>
+                        <div class="mt-4 space-y-2">
+                          <label class="block text-[11px] font-semibold text-gray-500" for="video-url-3">Tautan video YouTube (opsional)</label>
+                          <div class="flex gap-2"><input id="video-url-3" type="url" placeholder="https://youtu.be/..." class="min-w-0 flex-1 rounded-lg border border-gray-200 px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-600"><button type="button" onclick="loadEducationVideo(3)" class="shrink-0 rounded-lg bg-emerald-800 px-3 py-2 text-xs font-semibold text-white hover:bg-emerald-900">Tampilkan</button></div>
+                          <div id="video-frame-3" class="hidden aspect-video overflow-hidden rounded-xl bg-black"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SEKSI PERENCANAAN KEUTUHAN: 3 TAB INTERAKTIF -->
+    <section id="kalkulator-section" class="py-16 md:py-24 bg-gradient-to-b from-emerald-50/30 to-white relative overflow-hidden">
+        
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            
+            <div class="text-center space-y-3 mb-8">
+                <span class="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold uppercase tracking-wider">Modul Simulasi Keuangan</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-charcoal">Rancang Proteksi & Masa Depan Finansial Anda</h2>
+                <p class="text-sm text-gray-600 max-w-xl mx-auto">
+                    Gunakan simulasi interaktif di bawah ini untuk mengkalkulasi kebutuhan proteksi kesehatan, dana pendidikan anak, maupun dana pensiun masa tua Anda. Hasil simulasi merupakan ilustrasi berdasarkan asumsi yang Anda masukkan, bukan penawaran atau jaminan hasil.
+                </p>
+            </div>
+
+            <!-- Tab Switcher Navigation -->
+            <div class="flex border-b border-gray-200 mb-8 overflow-x-auto justify-start sm:justify-center">
+                <button onclick="switchTab('health')" id="tab-health" class="tab-btn active px-6 py-3 border-b-2 font-bold text-sm sm:text-base whitespace-nowrap transition-all border-transparent text-gray-500 hover:text-emerald-700">
+                    <i class="fa-solid fa-heart-pulse mr-2"></i>Health Protection Plan
+                </button>
+                <button onclick="switchTab('edu')" id="tab-edu" class="tab-btn px-6 py-3 border-b-2 font-bold text-sm sm:text-base whitespace-nowrap transition-all border-transparent text-gray-500 hover:text-emerald-700">
+                    <i class="fa-solid fa-graduation-cap mr-2"></i>Dana Pendidikan
+                </button>
+                <button onclick="switchTab('pensiun')" id="tab-pensiun" class="tab-btn px-6 py-3 border-b-2 font-bold text-sm sm:text-base whitespace-nowrap transition-all border-transparent text-gray-500 hover:text-emerald-700">
+                    <i class="fa-solid fa-umbrella-beach mr-2"></i>Dana Pensiun
+                </button>
+            </div>
+
+            <!-- CONTAINER CARD TAB CONTENT WITH GLASSMORPHISM -->
+            <div class="glass-card rounded-3xl p-6 sm:p-10 custom-shadow border border-emerald-100">
+                
+                <!-- TAB 1: HEALTH PROTECTION PLAN -->
+                <div id="content-health" class="tab-content space-y-8">
+                    <form onsubmit="handleHealthSubmit(event)" class="space-y-6">
+                        <div class="space-y-4">
+                            <label class="block text-sm font-bold text-charcoal">
+                                1. Pilih Jangkauan Wilayah Proteksi Medis <span class="text-red-500">*</span>
+                            </label>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="wilayah" value="Indonesia (Seluruh Rumah Sakit Terbaik Indonesia)" class="sr-only" checked>
+                                    <div class="region-card p-5 rounded-2xl border border-gray-200 transition-all text-left h-full flex flex-col justify-between">
+                                        <div class="space-y-2">
+                                            <div class="w-8 h-8 rounded-lg bg-gray-100 text-gray-700 flex items-center justify-center font-bold text-sm badge-icon transition-colors">
+                                                <i class="fa-solid fa-hospital"></i>
+                                            </div>
+                                            <p class="font-bold text-sm text-charcoal">Indonesia</p>
+                                            <p class="text-xs text-gray-500 leading-relaxed">Pilihan perlindungan kesehatan untuk membantu biaya perawatan di rumah sakit rekanan di Indonesia, sesuai ketentuan polis.</p>
+                                        </div>
+                                        <span class="mt-4 inline-block text-[11px] font-semibold text-emerald-700">Pilihan Populer</span>
+                                    </div>
+                                </label>
+
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="wilayah" value="Asia (Excl: HKG, JPN, SGP / Inc: All Asia)" class="sr-only">
+                                    <div class="region-card p-5 rounded-2xl border border-gray-200 transition-all text-left h-full flex flex-col justify-between">
+                                        <div class="space-y-2">
+                                            <div class="w-8 h-8 rounded-lg bg-gray-100 text-gray-700 flex items-center justify-center font-bold text-sm badge-icon transition-colors">
+                                                <i class="fa-solid fa-plane-departure"></i>
+                                            </div>
+                                            <p class="font-bold text-sm text-charcoal">Asia Regional</p>
+                                            <p class="text-xs text-gray-500 leading-relaxed">Pilihan wilayah perawatan di sejumlah negara Asia, sesuai ketentuan dan cakupan polis.</p>
+                                        </div>
+                                        <span class="mt-4 inline-block text-[11px] font-semibold text-emerald-700">Rekomendasi Medis</span>
+                                    </div>
+                                </label>
+
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="wilayah" value="Worldwide / Seluruh Dunia (Excl: USA / Full USA)" class="sr-only">
+                                    <div class="region-card p-5 rounded-2xl border border-gray-200 transition-all text-left h-full flex flex-col justify-between">
+                                        <div class="space-y-2">
+                                            <div class="w-8 h-8 rounded-lg bg-gray-100 text-gray-700 flex items-center justify-center font-bold text-sm badge-icon transition-colors">
+                                                <i class="fa-solid fa-earth-americas"></i>
+                                            </div>
+                                            <p class="font-bold text-sm text-charcoal">Worldwide</p>
+                                            <p class="text-xs text-gray-500 leading-relaxed">Pilihan cakupan perawatan internasional sesuai wilayah pertanggungan yang tersedia.</p>
+                                        </div>
+                                        <span class="mt-4 inline-block text-[11px] font-semibold text-emerald-700">Proteksi Maksimal</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4 pt-2">
+                            <label class="block text-sm font-bold text-charcoal">2. Informasi Nasabah</label>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-600 mb-1">Nama Lengkap <span class="text-red-500">*</span></label>
+                                    <input type="text" id="h-name" required placeholder="Contoh: Budi Santoso" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-700 focus:ring-2 focus:ring-emerald-100 text-sm outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-600 mb-1">Usia Saat Ini (Tahun) <span class="text-red-500">*</span></label>
+                                    <input type="number" id="h-age" min="0" max="90" required placeholder="Contoh: 35" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-700 focus:ring-2 focus:ring-emerald-100 text-sm outline-none">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">Pekerjaan / Bidang Usaha <span class="text-red-500">*</span></label>
+                                <input type="text" id="h-occ" required placeholder="Contoh: Pengusaha / Profesional" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-700 focus:ring-2 focus:ring-emerald-100 text-sm outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">Catatan Khusus (Opsional)</label>
+                                <textarea id="h-notes" rows="2" placeholder="Contoh: Ingin kamar 1 tempat tidur untuk keluarga." class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-700 focus:ring-2 focus:ring-emerald-100 text-sm outline-none resize-none"></textarea>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full py-4 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-base shadow-lg shadow-emerald-800/20 transition-all hover:scale-[1.01] flex items-center justify-center gap-3">
+                            <i class="fa-brands fa-whatsapp text-2xl"></i>
+                            <span>Kirim Rencana Health Plan via WhatsApp</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- TAB 2: KALKULATOR DANA PENDIDIKAN -->
+                <div id="content-edu" class="tab-content hidden space-y-8">
+                    <form id="edu-form" onsubmit="calculateEdu(event)" class="space-y-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">Usia Anak Saat Ini (Tahun)</label>
+                                <input type="number" id="edu-child-age" placeholder="0" min="0" max="17" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-700 text-sm outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">Target Usia Masuk Kuliah (Tahun)</label>
+                                <input type="number" id="edu-target-age" placeholder="0" min="15" max="25" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-700 text-sm outline-none">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">Biaya Kuliah Saat Ini (Rp)</label>
+                                <input type="text" id="edu-cost-now" placeholder="0" onkeyup="formatCurrencyInput(this)" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-700 text-sm outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">Estimasi Inflasi Pendidikan (%/tahun)</label>
+                                <input type="number" id="edu-inflation" placeholder="0" step="0.1" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-700 text-sm outline-none">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">Asumsi Imbal Hasil Investasi (%/tahun)</label>
+                                <input type="number" id="edu-return" placeholder="0" step="0.1" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-700 text-sm outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">Nama Orang Tua & Anak (Opsional)</label>
+                                <input type="text" id="edu-names" placeholder="Contoh: Budi & Kenzo" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-700 text-sm outline-none">
+                            </div>
+                        </div>
+
+                        <div class="flex gap-3">
+                            <button type="submit" class="flex-1 py-3.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-sm transition-all hover:scale-[1.01]">
+                                Hitung Proyeksi Dana Pendidikan
+                            </button>
+                            <button type="button" onclick="resetEduForm()" class="px-5 py-3.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold text-sm transition-all">
+                                Reset
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- HASIL KALKULASI PENDIDIKAN -->
+                    <div id="edu-result" class="hidden p-6 bg-emerald-50/70 border border-emerald-200 rounded-2xl space-y-4 animate-glide-up">
+                        <h4 class="font-bold text-emerald-900 text-base flex items-center gap-2">
+                            <i class="fa-solid fa-chart-line"></i> Hasil Proyeksi Dana Pendidikan
+                        </h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                            <div class="bg-white p-3.5 rounded-xl border border-emerald-100">
+                                <p class="text-xs text-gray-500">Masa Menabung:</p>
+                                <p id="res-edu-years" class="font-bold text-gray-800 text-base">0 Tahun Lagi</p>
+                            </div>
+                            <div class="bg-white p-3.5 rounded-xl border border-emerald-100">
+                                <p class="text-xs text-gray-500">Estimasi Biaya Masa Depan (FV):</p>
+                                <p id="res-edu-future-cost" class="font-bold text-emerald-700 text-base">Rp 0</p>
+                            </div>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl border border-emerald-200">
+                            <p class="text-xs text-gray-500">Rekomendasi Tabungan/Investasi Bulanan:</p>
+                            <p id="res-edu-monthly" class="font-extrabold text-emerald-800 text-xl">Rp 0 / bulan</p>
+                        </div>
+                        
+                        <div class="p-4 bg-white/80 rounded-xl border border-emerald-100 space-y-1">
+                            <p class="text-xs font-bold text-emerald-900 uppercase">Kesimpulan & Rekomendasi Strategis:</p>
+                            <p id="res-edu-summary" class="text-xs text-gray-700 leading-relaxed">
+                                Silakan isi formulir di atas untuk menampilkan hasil kalkulasi dan analisis rekomendasi strategis.
+                            </p>
+                        </div>
+
+                        <button onclick="sendEduWA()" class="w-full py-3 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-sm transition-all flex items-center justify-center gap-2">
+                            <i class="fa-brands fa-whatsapp text-lg"></i>
+                            <span>Konsultasikan Hasil Pendidikan Ini via WA</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- TAB 3: KALKULATOR DANA PENSIUN -->
+                <div id="content-pensiun" class="tab-content hidden space-y-8">
+                    <form id="pen-form" onsubmit="calculatePensiun(event)" class="space-y-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">Usia Saat Ini (Tahun)</label>
+                                <input type="number" id="pen-age-now" placeholder="0" min="18" max="70" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-700 text-sm outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">Rencana Usia Pensiun (Tahun)</label>
+                                <input type="number" id="pen-age-retire" placeholder="0" min="40" max="80" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-700 text-sm outline-none">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">Pengeluaran Hidup Bulanan Saat Ini (Rp)</label>
+                                <input type="text" id="pen-expense-now" placeholder="0" onkeyup="formatCurrencyInput(this)" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-700 text-sm outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">Estimasi Masa Pensiun (Tahun Hidup)</label>
+                                <input type="number" id="pen-years-in-retire" placeholder="0" min="5" max="40" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-700 text-sm outline-none">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">Estimasi Inflasi Tahunan (%)</label>
+                                <input type="number" id="pen-inflation" placeholder="0" step="0.1" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-700 text-sm outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">Asumsi Return Investasi (%/tahun)</label>
+                                <input type="number" id="pen-return" placeholder="0" step="0.1" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-700 text-sm outline-none">
+                            </div>
+                        </div>
+
+                        <div class="flex gap-3">
+                            <button type="submit" class="flex-1 py-3.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-sm transition-all hover:scale-[1.01]">
+                                Hitung Proyeksi Dana Pensiun
+                            </button>
+                            <button type="button" onclick="resetPenForm()" class="px-5 py-3.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold text-sm transition-all">
+                                Reset
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- HASIL KALKULASI PENSIUN -->
+                    <div id="pen-result" class="hidden p-6 bg-emerald-50/70 border border-emerald-200 rounded-2xl space-y-4 animate-glide-up">
+                        <h4 class="font-bold text-emerald-900 text-base flex items-center gap-2">
+                            <i class="fa-solid fa-umbrella-beach"></i> Hasil Analisis Dana Pensiun
+                        </h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                            <div class="bg-white p-3.5 rounded-xl border border-emerald-100">
+                                <p class="text-xs text-gray-500">Estimasi Biaya Hidup Pensiun/Bulan:</p>
+                                <p id="res-pen-future-expense" class="font-bold text-gray-800 text-base">Rp 0 / bln</p>
+                            </div>
+                            <div class="bg-white p-3.5 rounded-xl border border-emerald-100">
+                                <p class="text-xs text-gray-500">Total Kebutuhan Dana Pensiun (FV):</p>
+                                <p id="res-pen-total-needed" class="font-bold text-emerald-700 text-base">Rp 0</p>
+                            </div>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl border border-emerald-200">
+                            <p class="text-xs text-gray-500">Rekomendasi Alokasi Investasi Bulanan:</p>
+                            <p id="res-pen-monthly" class="font-extrabold text-emerald-800 text-xl">Rp 0 / bulan</p>
+                        </div>
+
+                        <div class="p-4 bg-white/80 rounded-xl border border-emerald-100 space-y-1">
+                            <p class="text-xs font-bold text-emerald-900 uppercase">Kesimpulan & Rekomendasi Strategis:</p>
+                            <p id="res-pen-summary" class="text-xs text-gray-700 leading-relaxed">
+                                Silakan isi formulir di atas untuk menampilkan hasil analisis pensiun dan saran proteksi aset.
+                            </p>
+                        </div>
+
+                        <button onclick="sendPensiunWA()" class="w-full py-3 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-sm transition-all flex items-center justify-center gap-2">
+                            <i class="fa-brands fa-whatsapp text-lg"></i>
+                            <span>Konsultasikan Hasil Pensiun Ini via WA</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+
+    <!-- TESTIMONI KLAIM NASABAH -->
+    <section id="testimoni-claim" class="py-16 md:py-24 bg-gradient-to-b from-white to-emerald-50/50 relative">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mx-auto text-center mb-12 space-y-4">
+          <span class="inline-flex px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold uppercase tracking-wider">Cerita Pendampingan</span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-charcoal">Testimoni & Pengalaman Klaim Nasabah</h2>
+          <p class="text-gray-600 leading-relaxed">Setiap proses klaim memiliki ketentuan dan hasil sesuai polis serta keputusan perusahaan asuransi. Unggah testimoni dan dokumen pendukung hanya dengan persetujuan nasabah.</p>
+        </div>
+        <div class="rounded-2xl border border-amber-200 bg-amber-50 p-4 mb-8 text-sm text-amber-900"><strong>Catatan penting:</strong> Enam contoh di bawah adalah contoh tata letak/draf, bukan klaim atau testimoni nasabah yang telah diverifikasi. Ganti dengan cerita, nominal, dan bukti klaim aktual yang telah mendapat izin publikasi sebelum website dipublikasikan.</div>
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <article class="testimonial-card bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+            <div class="flex items-center justify-between mb-4"><span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Contoh 01 · Rawat Inap</span><i class="fa-solid fa-quote-right text-2xl text-emerald-200"></i></div>
+            <p class="text-gray-700 leading-relaxed">“Terima kasih Pak Erik atas bantuan dan pendampingannya selama proses klaim. Saya merasa lebih tenang karena dibantu memahami dokumen dan tahapan yang diperlukan.”</p>
+            <p class="font-bold text-charcoal mt-4">Nasabah A (inisial contoh)</p><p class="text-xs text-gray-500">Ilustrasi nominal klaim: Rp25.000.000</p>
+            <label class="upload-label mt-5 block rounded-xl border border-dashed border-emerald-300 p-4 text-center cursor-pointer hover:bg-emerald-50"><i class="fa-solid fa-cloud-arrow-up text-emerald-700"></i><span class="block text-xs font-semibold text-gray-700 mt-1">Upload bukti / testimoni (JPG, PNG, PDF)</span><input class="testimonial-file sr-only" type="file" accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf" onchange="previewTestimonialFile(this,'proof-1')"></label><div id="proof-1" class="file-preview mt-3 text-xs text-gray-600"></div>
+          </article>
+          <article class="testimonial-card bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+            <div class="flex items-center justify-between mb-4"><span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Contoh 02 · Tindakan Medis</span><i class="fa-solid fa-quote-right text-2xl text-emerald-200"></i></div>
+            <p class="text-gray-700 leading-relaxed">“Terima kasih Pak Erik, sudah membantu mengarahkan proses administrasi klaim dan menjelaskan dokumen yang perlu saya siapkan. Pendampingannya sangat membantu.”</p>
+            <p class="font-bold text-charcoal mt-4">Nasabah B (inisial contoh)</p><p class="text-xs text-gray-500">Ilustrasi nominal klaim: Rp48.500.000</p>
+            <label class="upload-label mt-5 block rounded-xl border border-dashed border-emerald-300 p-4 text-center cursor-pointer hover:bg-emerald-50"><i class="fa-solid fa-cloud-arrow-up text-emerald-700"></i><span class="block text-xs font-semibold text-gray-700 mt-1">Upload bukti / testimoni (JPG, PNG, PDF)</span><input class="testimonial-file sr-only" type="file" accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf" onchange="previewTestimonialFile(this,'proof-2')"></label><div id="proof-2" class="file-preview mt-3 text-xs text-gray-600"></div>
+          </article>
+          <article class="testimonial-card bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+            <div class="flex items-center justify-between mb-4"><span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Contoh 03 · Perawatan Kanker</span><i class="fa-solid fa-quote-right text-2xl text-emerald-200"></i></div>
+            <p class="text-gray-700 leading-relaxed">“Terima kasih Pak Erik atas bantuannya. Saya mendapat penjelasan mengenai alur pengajuan klaim dan merasa didampingi selama proses berlangsung.”</p>
+            <p class="font-bold text-charcoal mt-4">Nasabah C (inisial contoh)</p><p class="text-xs text-gray-500">Ilustrasi nominal klaim: Rp120.000.000</p>
+            <label class="upload-label mt-5 block rounded-xl border border-dashed border-emerald-300 p-4 text-center cursor-pointer hover:bg-emerald-50"><i class="fa-solid fa-cloud-arrow-up text-emerald-700"></i><span class="block text-xs font-semibold text-gray-700 mt-1">Upload bukti / testimoni (JPG, PNG, PDF)</span><input class="testimonial-file sr-only" type="file" accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf" onchange="previewTestimonialFile(this,'proof-3')"></label><div id="proof-3" class="file-preview mt-3 text-xs text-gray-600"></div>
+          </article>
+          <article class="testimonial-card bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+            <div class="flex items-center justify-between mb-4"><span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Contoh 04 · Operasi</span><i class="fa-solid fa-quote-right text-2xl text-emerald-200"></i></div>
+            <p class="text-gray-700 leading-relaxed">“Terima kasih Pak Erik karena telah membantu saya memahami proses pengajuan klaim dan berkoordinasi terkait kelengkapan dokumen.”</p>
+            <p class="font-bold text-charcoal mt-4">Nasabah D (inisial contoh)</p><p class="text-xs text-gray-500">Ilustrasi nominal klaim: Rp67.000.000</p>
+            <label class="upload-label mt-5 block rounded-xl border border-dashed border-emerald-300 p-4 text-center cursor-pointer hover:bg-emerald-50"><i class="fa-solid fa-cloud-arrow-up text-emerald-700"></i><span class="block text-xs font-semibold text-gray-700 mt-1">Upload bukti / testimoni (JPG, PNG, PDF)</span><input class="testimonial-file sr-only" type="file" accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf" onchange="previewTestimonialFile(this,'proof-4')"></label><div id="proof-4" class="file-preview mt-3 text-xs text-gray-600"></div>
+          </article>
+          <article class="testimonial-card bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+            <div class="flex items-center justify-between mb-4"><span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Contoh 05 · Rawat Jalan</span><i class="fa-solid fa-quote-right text-2xl text-emerald-200"></i></div>
+            <p class="text-gray-700 leading-relaxed">“Terima kasih Pak Erik atas respons dan penjelasan yang diberikan. Saya jadi lebih memahami manfaat polis dan tahapan pengajuan klaim.”</p>
+            <p class="font-bold text-charcoal mt-4">Nasabah E (inisial contoh)</p><p class="text-xs text-gray-500">Ilustrasi nominal klaim: Rp8.750.000</p>
+            <label class="upload-label mt-5 block rounded-xl border border-dashed border-emerald-300 p-4 text-center cursor-pointer hover:bg-emerald-50"><i class="fa-solid fa-cloud-arrow-up text-emerald-700"></i><span class="block text-xs font-semibold text-gray-700 mt-1">Upload bukti / testimoni (JPG, PNG, PDF)</span><input class="testimonial-file sr-only" type="file" accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf" onchange="previewTestimonialFile(this,'proof-5')"></label><div id="proof-5" class="file-preview mt-3 text-xs text-gray-600"></div>
+          </article>
+          <article class="testimonial-card bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+            <div class="flex items-center justify-between mb-4"><span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Contoh 06 · Perawatan Intensif</span><i class="fa-solid fa-quote-right text-2xl text-emerald-200"></i></div>
+            <p class="text-gray-700 leading-relaxed">“Terima kasih Pak Erik atas bantuan dan komunikasinya selama proses klaim. Penjelasan yang diberikan membantu keluarga kami memahami tahapan pengajuan dengan lebih tenang.”</p>
+            <p class="font-bold text-charcoal mt-4">Nasabah F (inisial contoh)</p><p class="text-xs text-gray-500">Ilustrasi nominal klaim: Rp95.000.000</p>
+            <label class="upload-label mt-5 block rounded-xl border border-dashed border-emerald-300 p-4 text-center cursor-pointer hover:bg-emerald-50"><i class="fa-solid fa-cloud-arrow-up text-emerald-700"></i><span class="block text-xs font-semibold text-gray-700 mt-1">Upload bukti / testimoni (JPG, PNG, PDF)</span><input class="testimonial-file sr-only" type="file" accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf" onchange="previewTestimonialFile(this,'proof-6')"></label><div id="proof-6" class="file-preview mt-3 text-xs text-gray-600"></div>
+          </article>
+        </div>
+        <p class="text-xs text-gray-500 mt-6">Privasi: samarkan nama lengkap, nomor polis, alamat, nomor identitas, diagnosis, dan informasi pribadi lainnya. File yang dipilih hanya ditampilkan di browser ini; belum dikirim atau disimpan ke server.</p>
+      </div>
+    </section>
+
+    <footer class="bg-charcoal text-white pt-16 pb-12 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-gray-800">
+                
+                <div class="md:col-span-5 space-y-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-full bg-emerald-700 text-white flex items-center justify-center font-serif text-xl font-bold">
+                            E
+                        </div>
+                        <div>
+                            <span class="text-lg font-bold tracking-tight text-white block leading-tight">ERIK OKTO</span>
+                            <span class="text-xs font-semibold text-emerald-400 tracking-wider uppercase block">Health Protection Specialist</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 text-sm leading-relaxed pr-4">
+                        Mendampingi nasabah individu & korporat dalam merancang perlindungan kesehatan komprehensif, memastikan akses rumah sakit kelas dunia tanpa membebani finansial keluarga.
+                    </p>
+                </div>
+
+                <div class="md:col-span-4 space-y-3">
+                    <p class="text-sm font-bold uppercase tracking-wider text-emerald-400">Kontak Langsung</p>
+                    <ul class="space-y-2.5 text-sm text-gray-300">
+                        <li class="flex items-center gap-3">
+                            <i class="fa-brands fa-whatsapp text-emerald-500 text-lg w-5"></i>
+                            <span>+62 857-2265-5656</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-regular fa-envelope text-emerald-500 text-lg w-5"></i>
+                            <span> alucard.oktopus@gmail.com</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-solid fa-location-dot text-emerald-500 text-lg w-5"></i>
+                            <span>Bandung & Seluruh Indonesia</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="md:col-span-3 space-y-3">
+                    <p class="text-sm font-bold uppercase tracking-wider text-emerald-400">Lisensi & Sertifikasi</p>
+                    <p class="text-xs text-gray-400 leading-relaxed">
+                        Terlisensi Asosiasi Asuransi Jiwa Indonesia (AAJI) dan Asosiasi Asuransi Syariah Indonesia (AASI)
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="pt-8 text-center md:flex md:justify-between md:items-center text-xs text-gray-500 space-y-4 md:space-y-0">
+                <p>&copy; 2026 Erik Okto - Health Protection Specialist. All rights reserved.</p>
+                <p class="max-w-md">Disclaimer: Layanan ini merupakan konsultasi independen perencanaan proteksi kesehatan pribadi dan keluarga.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        const TARGET_WA = "6285722655656";
+
+        // Scroll reveal, subtle zoom and progress indicator
+        (function initPremiumMotion() {
+            const revealTargets = document.querySelectorAll(
+                'section > div > div, #risiko .card-hover, #kalkulator-section .glass-card, footer .grid > div'
+            );
+            revealTargets.forEach((el, index) => {
+                if (!el.classList.contains('hero-photo')) el.classList.add('reveal');
+                el.style.transitionDelay = `${Math.min((index % 4) * 90, 270)}ms`;
+            });
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.12, rootMargin: '0px 0px -45px 0px' });
+
+            document.querySelectorAll('.reveal, .reveal-zoom').forEach(el => observer.observe(el));
+
+            const progress = document.getElementById('scroll-progress');
+            const navbar = document.getElementById('navbar');
+            const updateScroll = () => {
+                const max = document.documentElement.scrollHeight - window.innerHeight;
+                const percent = max > 0 ? (window.scrollY / max) * 100 : 0;
+                progress.style.width = `${percent}%`;
+                navbar.classList.toggle('scrolled', window.scrollY > 24);
+            };
+            window.addEventListener('scroll', updateScroll, { passive: true });
+            updateScroll();
+        })();
+
+
+        function enterLandingPage() {
+            const overlay = document.getElementById('welcome-overlay');
+            overlay.classList.add('opacity-0', 'scale-105', 'pointer-events-none');
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 700);
+        }
+
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuBtn?.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+
+            document.getElementById('tab-' + tab).classList.add('active');
+            const targetContent = document.getElementById('content-' + tab);
+            targetContent.classList.remove('hidden');
+            targetContent.classList.add('animate-glide-up');
+        }
+
+        function formatNumber(num) {
+            return Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        function parseCurrency(str) {
+            return parseFloat(str.replace(/[^0-9]/g, '')) || 0;
+        }
+
+        function formatCurrencyInput(input) {
+            let val = input.value.replace(/[^0-9]/g, '');
+            if (val) {
+                input.value = parseInt(val, 10).toLocaleString('id-ID');
+            } else {
+                input.value = '';
+            }
+        }
+
+        function resetEduForm() {
+            document.getElementById('edu-form').reset();
+            document.getElementById('edu-result').classList.add('hidden');
+        }
+
+        function resetPenForm() {
+            document.getElementById('pen-form').reset();
+            document.getElementById('pen-result').classList.add('hidden');
+        }
+
+        function handleHealthSubmit(event) {
+            event.preventDefault();
+            const name = document.getElementById('h-name').value.trim();
+            const age = document.getElementById('h-age').value.trim();
+            const occ = document.getElementById('h-occ').value.trim();
+            const notes = document.getElementById('h-notes').value.trim() || 'Tidak ada catatan khusus';
+            const region = document.querySelector('input[name="wilayah"]:checked').value;
+
+            const text = `Halo Pak Erik, saya tertarik untuk berkonsultasi mengenai Health Protection Plan.\n\n` +
+                         `Data Singkat Saya:\n` +
+                         `- Nama: ${name}\n` +
+                         `- Usia: ${age} Tahun\n` +
+                         `- Pekerjaan: ${occ}\n` +
+                         `- Pilihan Wilayah Proteksi: ${region}\n` +
+                         `- Catatan: ${notes}\n\n` +
+                         `Mohon bantu perhitungkan rekomendasi polis yang sesuai. Terima kasih.`;
+
+            window.open(`https://wa.me/${TARGET_WA}?text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        let lastEduCalc = {};
+        function calculateEdu(e) {
+            e.preventDefault();
+            const childAge = parseInt(document.getElementById('edu-child-age').value) || 0;
+            const targetAge = parseInt(document.getElementById('edu-target-age').value) || 0;
+            const costNow = parseCurrency(document.getElementById('edu-cost-now').value);
+            const inflation = (parseFloat(document.getElementById('edu-inflation').value) || 0) / 100;
+            const returnRate = (parseFloat(document.getElementById('edu-return').value) || 0) / 100;
+            const names = document.getElementById('edu-names').value.trim() || 'Bapak/Ibu';
+
+            const years = Math.max(1, targetAge - childAge);
+            const futureCost = costNow * Math.pow(1 + inflation, years);
+            
+            const rMonthly = returnRate / 12;
+            const totalMonths = years * 12;
+            let monthlySave = 0;
+            if (rMonthly > 0) {
+                monthlySave = (futureCost * rMonthly) / (Math.pow(1 + rMonthly, totalMonths) - 1);
+            } else {
+                monthlySave = futureCost / totalMonths;
+            }
+
+            lastEduCalc = { years, futureCost, monthlySave, names };
+
+            document.getElementById('res-edu-years').innerText = `${years} Tahun Lagi`;
+            document.getElementById('res-edu-future-cost').innerText = `Rp ${formatNumber(futureCost)}`;
+            document.getElementById('res-edu-monthly').innerText = `Rp ${formatNumber(monthlySave)} / bulan`;
+
+            document.getElementById('res-edu-summary').innerText = 
+                `Untuk menyiapkan dana pendidikan kuliah ${years} tahun lagi sebesar Rp ${formatNumber(futureCost)}, dibutuhkan investasi sekitar Rp ${formatNumber(monthlySave)}/bulan. Kombinasi instrumen investasi + proteksi jiwa/kesehatan sangat disarankan agar persiapan target dana pendidikan dapat direncanakan saat anak berusia ${targetAge} tahun.`;
+
+            document.getElementById('edu-result').classList.remove('hidden');
+        }
+
+        function sendEduWA() {
+            const text = `Halo Pak Erik, saya telah melakukan kalkulasi Dana Pendidikan Anak:\n\n` +
+                         `- Pengaju/Nama: ${lastEduCalc.names}\n` +
+                         `- Waktu Persiapan: ${lastEduCalc.years} Tahun Lagi\n` +
+                         `- Target Dana Pendidikan (FV): Rp ${formatNumber(lastEduCalc.futureCost)}\n` +
+                         `- Proyeksi Tabungan Bulanan: Rp ${formatNumber(lastEduCalc.monthlySave)}/bulan\n\n` +
+                         `Mohon masukan rekomendasi instrumen dan proteksi yang tepat untuk program ini.`;
+
+            window.open(`https://wa.me/${TARGET_WA}?text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        let lastPenCalc = {};
+        function calculatePensiun(e) {
+            e.preventDefault();
+            const ageNow = parseInt(document.getElementById('pen-age-now').value) || 0;
+            const ageRetire = parseInt(document.getElementById('pen-age-retire').value) || 0;
+            const expenseNow = parseCurrency(document.getElementById('pen-expense-now').value);
+            const yearsInRetire = parseInt(document.getElementById('pen-years-in-retire').value) || 0;
+            const inflation = (parseFloat(document.getElementById('pen-inflation').value) || 0) / 100;
+            const returnRate = (parseFloat(document.getElementById('pen-return').value) || 0) / 100;
+
+            const yearsToRetire = Math.max(1, ageRetire - ageNow);
+            const monthlyExpenseRetire = expenseNow * Math.pow(1 + inflation, yearsToRetire);
+            const totalNeeded = monthlyExpenseRetire * 12 * yearsInRetire;
+
+            const rMonthly = returnRate / 12;
+            const totalMonths = yearsToRetire * 12;
+            let monthlyInvest = 0;
+            if (rMonthly > 0) {
+                monthlyInvest = (totalNeeded * rMonthly) / (Math.pow(1 + rMonthly, totalMonths) - 1);
+            } else {
+                monthlyInvest = totalNeeded / totalMonths;
+            }
+
+            lastPenCalc = { ageNow, ageRetire, monthlyExpenseRetire, totalNeeded, monthlyInvest };
+
+            document.getElementById('res-pen-future-expense').innerText = `Rp ${formatNumber(monthlyExpenseRetire)} / bln`;
+            document.getElementById('res-pen-total-needed').innerText = `Rp ${formatNumber(totalNeeded)}`;
+            document.getElementById('res-pen-monthly').innerText = `Rp ${formatNumber(monthlyInvest)} / bulan`;
+
+            document.getElementById('res-pen-summary').innerText = 
+                `Dalam ${yearsToRetire} tahun ke depan, akibat inflasi, nilai biaya hidup Rp ${formatNumber(expenseNow)}/bulan akan setara dengan Rp ${formatNumber(monthlyExpenseRetire)}/bulan. Anda membutuhkan total dana pensiun sebesar Rp ${formatNumber(totalNeeded)}. Agar dana pensiun ini aman dari risiko tergerus biaya rumah sakit di masa tua, proteksi kesehatan dapat dipertimbangkan sejak sekarang sesuai kebutuhan dan kemampuan finansial.`;
+
+            document.getElementById('pen-result').classList.remove('hidden');
+        }
+
+        function sendPensiunWA() {
+            const text = `Halo Pak Erik, saya telah menghitung simulasi Dana Pensiun:\n\n` +
+                         `- Usia Saat Ini / Pensiun: ${lastPenCalc.ageNow} th / ${lastPenCalc.ageRetire} th\n` +
+                         `- Biaya Hidup Pensiun (FV): Rp ${formatNumber(lastPenCalc.monthlyExpenseRetire)}/bulan\n` +
+                         `- Total Kebutuhan Dana Pensiun: Rp ${formatNumber(lastPenCalc.totalNeeded)}\n` +
+                         `- Target Investasi Bulanan: Rp ${formatNumber(lastPenCalc.monthlyInvest)}/bulan\n\n` +
+                         `Mohon dibantu buatkan perencanaan pensiun & perlindungan aset yang optimal.`;
+
+            window.open(`https://wa.me/${TARGET_WA}?text=${encodeURIComponent(text)}`, '_blank');
+        }
+    </script>
+</body>
+</html>
